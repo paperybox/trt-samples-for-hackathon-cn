@@ -89,27 +89,27 @@ public:
     GruPlugin() = delete;
     ~GruPlugin() override;
 
-    const char *getPluginType() const override;
-    const char *getPluginVersion() const override;
-    int32_t     getNbOutputs() const override;
-    int32_t     initialize() override;
-    void        terminate() override;
-    size_t      getSerializationSize() const override;
-    void        serialize(void *buffer) const override;
-    void        destroy() override;
-    void        setPluginNamespace(const char *pluginNamespace) override;
-    const char *getPluginNamespace() const override;
+    const char *getPluginType() const noexcept override;
+    const char *getPluginVersion() const noexcept override;
+    int32_t     getNbOutputs() const noexcept override;
+    int32_t     initialize() noexcept override;
+    void        terminate() noexcept override;
+    size_t      getSerializationSize() const noexcept override;
+    void        serialize(void *buffer) const noexcept override;
+    void        destroy() noexcept override;
+    void        setPluginNamespace(const char *pluginNamespace) noexcept override;
+    const char *getPluginNamespace() const noexcept override;
 
-    DataType getOutputDataType(int32_t index, const DataType *inputTypes, int32_t nbInputs) const override;
-    void     attachToContext(cudnnContext *, cublasContext *, IGpuAllocator *) override;
-    void     detachFromContext() override;
+    DataType getOutputDataType(int32_t index, const DataType *inputTypes, int32_t nbInputs) const noexcept override;
+    void     attachToContext(cudnnContext *, cublasContext *, IGpuAllocator *) noexcept override;
+    void     detachFromContext() noexcept override;
 
-    IPluginV2DynamicExt *clone() const override;
-    DimsExprs            getOutputDimensions(int32_t outputIndex, const DimsExprs *inputs, int32_t nbInputs, IExprBuilder &exprBuilder) override;
-    bool                 supportsFormatCombination(int32_t pos, const PluginTensorDesc *inOut, int32_t nbInputs, int32_t nbOutputs) override;
-    void                 configurePlugin(const DynamicPluginTensorDesc *in, int32_t nbInputs, const DynamicPluginTensorDesc *out, int32_t nbOutputs) override;
-    size_t               getWorkspaceSize(const PluginTensorDesc *inputs, int32_t nbInputs, const PluginTensorDesc *outputs, int32_t nbOutputs) const override;
-    int32_t              enqueue(const PluginTensorDesc *inputDesc, const PluginTensorDesc *outputDesc, const void *const *inputs, void *const *outputs, void *workspace, cudaStream_t stream) override;
+    IPluginV2DynamicExt *clone() const noexcept override;
+    DimsExprs            getOutputDimensions(int32_t outputIndex, const DimsExprs *inputs, int32_t nbInputs, IExprBuilder &exprBuilder) noexcept override;
+    bool                 supportsFormatCombination(int32_t pos, const PluginTensorDesc *inOut, int32_t nbInputs, int32_t nbOutputs) noexcept override;
+    void                 configurePlugin(const DynamicPluginTensorDesc *in, int32_t nbInputs, const DynamicPluginTensorDesc *out, int32_t nbOutputs) noexcept override;
+    size_t               getWorkspaceSize(const PluginTensorDesc *inputs, int32_t nbInputs, const PluginTensorDesc *outputs, int32_t nbOutputs) const noexcept override;
+    int32_t              enqueue(const PluginTensorDesc *inputDesc, const PluginTensorDesc *outputDesc, const void *const *inputs, void *const *outputs, void *workspace, cudaStream_t stream) noexcept override;
 
 private:
     int            mInputSize;
@@ -133,13 +133,13 @@ class GruPluginCreator : public IPluginCreator
 public:
     GruPluginCreator();
     ~GruPluginCreator() override = default;
-    const char                  *getPluginName() const override;
-    const char                  *getPluginVersion() const override;
-    const PluginFieldCollection *getFieldNames() override;
-    IPluginV2                   *createPlugin(const char *name, const PluginFieldCollection *fc) override;
-    IPluginV2                   *deserializePlugin(const char *name, const void *serialData, size_t serialLength) override;
-    void                         setPluginNamespace(const char *pluginNamespace) override;
-    const char                  *getPluginNamespace() const override;
+    const char                  *getPluginName() const noexcept override;
+    const char                  *getPluginVersion() const noexcept override;
+    const PluginFieldCollection *getFieldNames() noexcept override;
+    IPluginV2                   *createPlugin(const char *name, const PluginFieldCollection *fc) noexcept override;
+    IPluginV2                   *deserializePlugin(const char *name, const void *serialData, size_t serialLength) noexcept override;
+    void                         setPluginNamespace(const char *pluginNamespace) noexcept override;
+    const char                  *getPluginNamespace() const noexcept override;
 
 private:
     std::string mPluginNamespace;

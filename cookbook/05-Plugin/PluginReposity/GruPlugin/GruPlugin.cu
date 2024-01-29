@@ -380,22 +380,22 @@ GruPlugin::~GruPlugin()
     }
 }
 
-const char *GruPlugin::getPluginType() const
+const char *GruPlugin::getPluginType() const noexcept
 {
     return GRU_PLUGIN_NAME;
 }
 
-const char *GruPlugin::getPluginVersion() const
+const char *GruPlugin::getPluginVersion() const noexcept
 {
     return GRU_PLUGIN_VERSION;
 }
 
-inline int GruPlugin::getNbOutputs() const
+inline int GruPlugin::getNbOutputs() const noexcept
 {
     return GRU_PLUGIN_NUM_OUTPUT;
 }
 
-inline int GruPlugin::initialize()
+inline int GruPlugin::initialize() noexcept
 {
     CHECK_CUDA_ERROR(cudaMalloc((void **)&mWeightsX_d, mInputSize * mHiddenSize * 3 * sizeof(float)));
     CHECK_CUDA_ERROR(cudaMalloc((void **)&mWeightsH_d, mHiddenSize * mHiddenSize * 3 * sizeof(float)));
@@ -416,7 +416,7 @@ inline int GruPlugin::initialize()
     return 0;
 }
 
-inline void GruPlugin::terminate()
+inline void GruPlugin::terminate() noexcept
 {
     if (mWeightsX_d != nullptr)
     {
@@ -452,7 +452,7 @@ inline void GruPlugin::terminate()
     CHECK_CUBLAS_ERROR(cublasDestroy(mCuBlasHandle));
 }
 
-inline size_t GruPlugin::getSerializationSize() const
+inline size_t GruPlugin::getSerializationSize() const noexcept
 {
     size_t total_size = 0;
     total_size += sizeof(int);                                                  // mInputSize
@@ -462,7 +462,7 @@ inline size_t GruPlugin::getSerializationSize() const
     return total_size;
 }
 
-inline void GruPlugin::serialize(void *buffer) const
+inline void GruPlugin::serialize(void *buffer) const noexcept
 {
     char       *d = static_cast<char *>(buffer);
     const char *a = d;
@@ -484,36 +484,36 @@ inline void GruPlugin::serialize(void *buffer) const
     }
 }
 
-inline void GruPlugin::destroy()
+inline void GruPlugin::destroy() noexcept
 {
     delete this;
 }
 
-inline void GruPlugin::setPluginNamespace(const char *pluginNamespace)
+inline void GruPlugin::setPluginNamespace(const char *pluginNamespace) noexcept
 {
     mPluginNamespace = pluginNamespace;
 }
 
-inline const char *GruPlugin::getPluginNamespace() const
+inline const char *GruPlugin::getPluginNamespace() const noexcept
 {
     return mPluginNamespace.c_str();
 }
 
-inline DataType GruPlugin::getOutputDataType(int index, const DataType *inputTypes, int nbInputs) const
+inline DataType GruPlugin::getOutputDataType(int index, const DataType *inputTypes, int nbInputs) const noexcept
 {
     return inputTypes[0];
 }
 
-inline void GruPlugin::attachToContext(cudnnContext *, cublasContext *, IGpuAllocator *) {}
+inline void GruPlugin::attachToContext(cudnnContext *, cublasContext *, IGpuAllocator *) noexcept {}
 
-inline void GruPlugin::detachFromContext() {}
+inline void GruPlugin::detachFromContext() noexcept {}
 
-inline IPluginV2DynamicExt *GruPlugin::clone() const
+inline IPluginV2DynamicExt *GruPlugin::clone() const noexcept
 {
     return new GruPlugin(*this);
 }
 
-inline DimsExprs GruPlugin::getOutputDimensions(int32_t outputIndex, const DimsExprs *inputs, int32_t nbInputs, IExprBuilder &exprBuilder)
+inline DimsExprs GruPlugin::getOutputDimensions(int32_t outputIndex, const DimsExprs *inputs, int32_t nbInputs, IExprBuilder &exprBuilder) noexcept
 {
     DimsExprs outputDims;
     if (outputIndex == 0)
@@ -532,7 +532,7 @@ inline DimsExprs GruPlugin::getOutputDimensions(int32_t outputIndex, const DimsE
     return outputDims;
 }
 
-inline bool GruPlugin::supportsFormatCombination(int32_t pos, const PluginTensorDesc *inOut, int32_t nbInputs, int32_t nbOutputs)
+inline bool GruPlugin::supportsFormatCombination(int32_t pos, const PluginTensorDesc *inOut, int32_t nbInputs, int32_t nbOutputs) noexcept
 {
     switch (pos)
     {
@@ -549,9 +549,9 @@ inline bool GruPlugin::supportsFormatCombination(int32_t pos, const PluginTensor
     }
 }
 
-inline void GruPlugin::configurePlugin(const DynamicPluginTensorDesc *in, int32_t nbInputs, const DynamicPluginTensorDesc *out, int32_t nbOutputs) {}
+inline void GruPlugin::configurePlugin(const DynamicPluginTensorDesc *in, int32_t nbInputs, const DynamicPluginTensorDesc *out, int32_t nbOutputs) noexcept {}
 
-inline size_t GruPlugin::getWorkspaceSize(const PluginTensorDesc *inputs, int32_t nbInputs, const PluginTensorDesc *outputs, int32_t nbOutputs) const
+inline size_t GruPlugin::getWorkspaceSize(const PluginTensorDesc *inputs, int32_t nbInputs, const PluginTensorDesc *outputs, int32_t nbOutputs)  const noexcept
 {
     const size_t batchSize = inputs[0].dims.d[0], maxSeqLen = inputs[0].dims.d[1];
     const size_t element_size = (inputs[0].type == DataType::kFLOAT) ? sizeof(float) : sizeof(__half);
@@ -565,7 +565,7 @@ inline size_t GruPlugin::getWorkspaceSize(const PluginTensorDesc *inputs, int32_
     return workspaceSize;
 }
 
-inline int32_t GruPlugin::enqueue(const PluginTensorDesc *inputDesc, const PluginTensorDesc *outputDesc, const void *const *inputs, void *const *outputs, void *workspace, cudaStream_t stream)
+inline int32_t GruPlugin::enqueue(const PluginTensorDesc *inputDesc, const PluginTensorDesc *outputDesc, const void *const *inputs, void *const *outputs, void *workspace, cudaStream_t stream) noexcept
 {
     int      status = -1, batchSize = inputDesc[0].dims.d[0], maxSeqLen = inputDesc[0].dims.d[1];
     DataType dataType = inputDesc[0].type;
@@ -603,22 +603,22 @@ inline int32_t GruPlugin::enqueue(const PluginTensorDesc *inputDesc, const Plugi
 
 GruPluginCreator::GruPluginCreator() {}
 
-inline const char *GruPluginCreator::getPluginName() const
+inline const char *GruPluginCreator::getPluginName() const noexcept
 {
     return GRU_PLUGIN_NAME;
 }
 
-inline const char *GruPluginCreator::getPluginVersion() const
+inline const char *GruPluginCreator::getPluginVersion() const noexcept
 {
     return GRU_PLUGIN_VERSION;
 }
 
-inline const PluginFieldCollection *GruPluginCreator::getFieldNames()
+inline const PluginFieldCollection *GruPluginCreator::getFieldNames() noexcept
 {
     return nullptr;
 }
 
-IPluginV2 *GruPluginCreator::createPlugin(const char *name, const PluginFieldCollection *fc)
+IPluginV2 *GruPluginCreator::createPlugin(const char *name, const PluginFieldCollection *fc) noexcept
 {
     const PluginField *fields     = fc->fields;
     int                inputSize  = *(static_cast<const int *>(fields[0].data));
@@ -629,17 +629,17 @@ IPluginV2 *GruPluginCreator::createPlugin(const char *name, const PluginFieldCol
     return new GruPlugin(name, inputSize, hiddenSize, x_weights, h_weights, bias);
 }
 
-IPluginV2 *GruPluginCreator::deserializePlugin(const char *name, const void *serialData, size_t serialLength)
+IPluginV2 *GruPluginCreator::deserializePlugin(const char *name, const void *serialData, size_t serialLength) noexcept
 {
     return new GruPlugin(name, serialData, serialLength);
 }
 
-inline void GruPluginCreator::setPluginNamespace(const char *pluginNamespace)
+inline void GruPluginCreator::setPluginNamespace(const char *pluginNamespace) noexcept
 {
     mPluginNamespace = pluginNamespace;
 }
 
-inline const char *GruPluginCreator::getPluginNamespace() const
+inline const char *GruPluginCreator::getPluginNamespace() const noexcept
 {
     return mPluginNamespace.c_str();
 }
